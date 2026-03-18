@@ -35,7 +35,7 @@ streamlit run ui.py
 
 ## 🌐 Live Demo
 
-(Coming soon after deployment 🚀)
+https://datalens-yhtaawpecujdhvfxuowkhs.streamlit.app/
 
 ---
 
