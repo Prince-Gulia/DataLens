@@ -77,7 +77,7 @@ if "engine" not in st.session_state:
         path = st.session_state.get("sample_path")
         if path is not None:
             df = pd.read_csv(path)
-            engine = DataEngine(df=df)
+            engine = DataEngine(df)
         else:
             st.stop()
 
