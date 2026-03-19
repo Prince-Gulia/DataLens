@@ -6,13 +6,17 @@ class DataEngine:
 
     supported_extensions = (".csv", ".xls", ".xlsx")
 
-    # =========================
-    # INIT + LOAD
-    # =========================
+    def __init__(self, file = None, df = None):
+        if file is not None:
+            self.file = file
+            self.df = self._load()
 
-    def __init__(self, file):
-        self.file = file
-        self.df = self._load()
+        elif df is not None:
+            self.df = df
+
+        else:
+            raise ValueError("Provide File or DataFrame")
+
 
     def _load(self) -> pd.DataFrame:
         name = self.file.name.lower()
@@ -28,19 +32,19 @@ class DataEngine:
                 f"Unsupported File Format '{name}'. "
                 f"Accepted Formats: {self.supported_extensions}"
             )
-
-    # =========================
-    # ANALYSIS FUNCTIONS
-    # =========================
+        
 
     def get_numeric_columns(self):
         return self.df.select_dtypes(include=["int64", "float64"]).columns.tolist()
 
+
     def get_categorical_columns(self):
         return self.df.select_dtypes(include=["object"]).columns.tolist()
 
+
     def get_datetime_columns(self):
         return self.df.select_dtypes(include=["datetime64"]).columns.tolist()
+
 
     def detect_potential_numeric(self, threshold=0.7):
         cols = []
@@ -51,6 +55,7 @@ class DataEngine:
                 cols.append(col)
         return cols
 
+
     def get_summary(self):
         return {
             "Rows": self.df.shape[0],
@@ -58,6 +63,7 @@ class DataEngine:
             "Missing": self.df.isnull().sum(),
             "Duplicates": int(self.df.duplicated().sum())
         }
+
 
     def get_column_stats(self, column):
         s = self.df[column].dropna()
@@ -72,32 +78,33 @@ class DataEngine:
             "Kurtosis": round(s.kurtosis(), 4),
         }
 
+
     def get_value_counts(self, column):
         vc = self.df[column].value_counts().reset_index()
         vc.columns = [column, "Count"]
         return vc
 
-    # =========================
-    # CLEANING FUNCTIONS
-    # =========================
 
     def count_duplicates(self):
         return int(self.df.duplicated().sum())
+
 
     def remove_duplicates(self):
         before = len(self.df)
         self.df = self.df.drop_duplicates()
         return before - len(self.df)
 
+
     def fill_missing_mean(self, column):
         self.df[column] = self.df[column].fillna(self.df[column].mean())
+
 
     def fill_missing_mode(self, column):
         mode_val = self.df[column].mode()
         if not mode_val.empty:
             self.df[column] = self.df[column].fillna(mode_val[0])
 
-    # 🔥 SMART NUMERIC CONVERSION
+
     def convert_to_numeric(self, column, threshold=0.85):
         original = self.df[column]
 
@@ -127,7 +134,7 @@ class DataEngine:
             "action": action
         }
 
-    # 🔥 AUTO CLEAN PIPELINE
+
     def auto_clean(self, threshold=0.85):
         report = []
 
@@ -145,16 +152,10 @@ class DataEngine:
 
         return report
 
-    # =========================
-    # COLUMN MANAGEMENT
-    # =========================
 
     def drop_column(self, column):
         self.df = self.df.drop(columns=[column])
 
-    # =========================
-    # ACCESSORS
-    # =========================
 
     def get_df(self):
         return self.df
