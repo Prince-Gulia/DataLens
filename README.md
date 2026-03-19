@@ -41,4 +41,4 @@ https://datalens-yhtaawpecujdhvfxuowkhs.streamlit.app/
 
 ## 👨‍💻 Author
 
-Built by Tushant & Prince
+Built by Tushant(https://github.com/sus-tushhh) & Prince
