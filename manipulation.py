@@ -19,7 +19,10 @@ class DataEngine:
 
 
     def _load(self) -> pd.DataFrame:
-        name = self.file.name.lower()
+        if hasattr(self.file, "name"):
+            name = self.file.name.lower()
+        else:
+            name = str(self.file).lower()
 
         if name.endswith(".csv"):
             return pd.read_csv(self.file)
